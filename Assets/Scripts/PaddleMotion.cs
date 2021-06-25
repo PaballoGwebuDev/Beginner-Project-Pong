@@ -39,7 +39,7 @@ public class PaddleMotion : MonoBehaviour
     {
 
         paddleCollider = gameObject.GetComponent<Collider2D>();
-        //paddleTransform = gameObject.transform;
+
     }
 
     // Update is called once per frame
@@ -48,17 +48,6 @@ public class PaddleMotion : MonoBehaviour
     {
         paddleTransform = gameObject.transform;
         verticalInput = Input.GetAxis("Vertical");
-        //if (Input.GetKey(KeyCode.UpArrow))
-        //{
-        //    goingUp = true;
-        //    goingDown = false;
-        //}
-        ////Downward motion
-        //else if (Input.GetKey(KeyCode.DownArrow))
-        //{
-        //    goingDown = true;
-        //    goingUp = false;
-        //}
         MoveController(paddleTransform);
     }
 
@@ -89,7 +78,7 @@ public class PaddleMotion : MonoBehaviour
 
         }
     }
-    private void OnCollisionEnter2D(Collision2D collision) //make sure child classes do not inherit this behaviour
+    private void OnCollisionEnter2D(Collision2D collision) 
     {
         EventBroker.CallPlayerPaddleHit(); //Try using a parameterized call to send the paddle's location.
 

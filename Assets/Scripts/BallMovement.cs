@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BallMovement : Bounding
+public class BallMovement : MonoBehaviour
 
 {
     #region Field Declarations
@@ -36,8 +36,7 @@ public class BallMovement : Bounding
 
     void Start()
     {
-        Bounding myBounding = new Bounding();
-        //target = new Vector3(Random.Range(rightLimit, leftLimit), Random.Range(lowLimit,upLimit));
+
         target = new Vector2(leftLimit, Random.Range(lowLimit, upLimit));
         playerRb.AddForce((target - playerRb.transform.position).normalized * ballSpeed, ForceMode2D.Impulse);
         EventBroker.PlayerPaddleHit += EventBroker_PlayerPaddleHit;
