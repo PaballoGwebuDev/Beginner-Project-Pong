@@ -7,6 +7,10 @@ public class GameManager : Singleton<GameManager>
 {
     // 
     private static GameManager instance;
+    private static bool playerAI = true;
+    public static bool PlayerAI {
+        get { return playerAI; }
+    }
     //string currentLevelName = string.Empty;
     int currentLevelNumber;
     List<AsyncOperation> loadOperations;
@@ -57,5 +61,10 @@ public class GameManager : Singleton<GameManager>
             return;
         }
         asyncOperation.completed += OnUnloadLevelOperationComplete;
+    }
+    public void SetPlayerInput()
+    {
+        Debug.Log("Setting player AI to false");
+        playerAI = false;
     }
 }
