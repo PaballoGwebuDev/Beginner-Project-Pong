@@ -5,6 +5,7 @@ public class EventBroker
     public static event Action PlayerPaddleHit;
     public static event Action KickStartAi;
     public static event Action AIPaddleHit;
+
     public static void CallPlayerPaddleHit()
     {
         if(PlayerPaddleHit != null)
@@ -25,4 +26,5 @@ public class EventBroker
             AIPaddleHit();
         }
     }
+
 }

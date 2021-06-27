@@ -22,7 +22,7 @@ public class PaddleAI : PaddleMotion
         EventBroker.KickStartAi += EventBroker_KickStartAi;
         ballMovement = FindObjectOfType<BallMovement>();
         AICollider = gameObject.GetComponent<Collider2D>();
-        if(player2AI == false)
+        if(GameManager.PlayerAI == false)
         {
             speedMultiplier = 1.0f;
 
@@ -44,11 +44,11 @@ public class PaddleAI : PaddleMotion
     void Update()
     {
         aIPaddleTransform = gameObject.transform;
-        if (player2AI & startMoving)
+        if (GameManager.PlayerAI & startMoving)
         {
             MoveAIController();
         }
-        else if (player2AI == false)
+        else if (GameManager.PlayerAI == false)
         {
             aIVerticalInput = Input.GetAxis("Vertical");
             MoveController(aIPaddleTransform);
