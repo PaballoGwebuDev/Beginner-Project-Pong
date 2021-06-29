@@ -7,7 +7,7 @@ public class SubMenu : Menu
 {
     private void Awake()
     {
-        //gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
     public override void StartNew()
     {

@@ -21,7 +21,7 @@ public class EventBroker
     }
     public static void callAIPaddleHit()
     {
-        if(AIPaddleHit != null)
+        if (AIPaddleHit != null)
         {
             AIPaddleHit();
         }

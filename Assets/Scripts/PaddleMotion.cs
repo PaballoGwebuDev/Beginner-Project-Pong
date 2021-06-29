@@ -8,8 +8,6 @@ public class PaddleMotion : MonoBehaviour
     private float upPaddleBounds = 4.45f;
     private float lowPaddleBounds = -4.98f;
 
-    bool goingUp = false;
-    bool goingDown = false;
     float playerSide = 12.82f; //placeholder for direction of the paddle for methods
     Transform paddleTransform;
     //Encapsulating vertical game screen bounds
@@ -53,7 +51,7 @@ public class PaddleMotion : MonoBehaviour
 
     protected virtual void MoveController(Transform whichPaddle)
     {
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.W))
         {
             if (whichPaddle.position.y <= UpPaddleBounds)
             {
@@ -65,7 +63,7 @@ public class PaddleMotion : MonoBehaviour
             }
 
         }
-        else if (Input.GetKey(KeyCode.DownArrow))
+        else if (Input.GetKey(KeyCode.S))
         {
             if (whichPaddle.position.y >= LowPaddleBounds)
             {

@@ -61,7 +61,7 @@ public class PaddleAI : PaddleMotion
     }
     private void MoveAIController()
     {
-        //base.MoveController();
+        
         target = new Vector3(-6.77f, ballMovement.ballsYPosition);
         Vector3 moveHere = target - new Vector3(aIPaddleTransform.position.x, aIPaddleTransform.position.y);
 
@@ -79,7 +79,7 @@ public class PaddleAI : PaddleMotion
 
     protected override void MoveController(Transform whichPaddle)
     {
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.UpArrow))
         {
             if (whichPaddle.position.y <= UpPaddleBounds)
             {
@@ -91,7 +91,7 @@ public class PaddleAI : PaddleMotion
             }
 
         }
-        else if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.DownArrow))
         {
             if (whichPaddle.position.y >= LowPaddleBounds)
             {
@@ -104,19 +104,5 @@ public class PaddleAI : PaddleMotion
 
         }
     }
-    //private void InputLogger2()
-    //{
-    //    //Upward motion
-    //    if (Input.GetKey(KeyCode.W))
-    //    {
-    //        aIGoingUp = true;
-    //        aIGoingDown = false;
-    //    }
-    //    //Downward motion
-    //    else if (Input.GetKey(KeyCode.S))
-    //    {
-    //        aIGoingDown = true;
-    //        aIGoingUp = false;
-    //    }
-    //}
+
 }

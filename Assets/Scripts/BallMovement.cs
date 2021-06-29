@@ -1,19 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
 
 public class BallMovement : MonoBehaviour
 
 {
     #region Field Declarations
 
-    //Declaring fields outside methods allow you to use them across the whole class, wheras inside methods only allows you to use them within those methods.
+ 
     [SerializeField] float ballSpeed = 3.0f;
     [SerializeField] float aiReactPoint = 2.07f; //currently -1 in the inspector(which reacts okay)
-    //[SerializeField] float impulseReduction = 0.05f;
+    
     Rigidbody2D playerRb;
-    bool playerPaddleHit = false; //used to manipulate the direction of the ball bounces
+    //used to manipulate the direction of the ball bounces
+    bool playerPaddleHit = false; 
     bool aIPaddleHit = false;
+    bool noHit;
+
     public float ballsYPosition; 
     //screen bounds
     public static float leftLimit = 12.82f;
@@ -22,8 +28,18 @@ public class BallMovement : MonoBehaviour
     public static float lowLimit = -5.32f;
     //
     Vector3 target;
+    Vector2 paddleLocation;
+    Vector2 aIPaddleLocation;
     PaddleMotion paddleMotion;
     PaddleAI paddleAI;
+
+    [SerializeField] TextMeshProUGUI playerScoreText;
+    [SerializeField] TextMeshProUGUI aIScoreText;
+    [SerializeField] GameObject[] uIPrefabs;
+
+    int playerScore = 0;
+    int aIScore = 0;
+    
 
     #endregion
 
@@ -31,26 +47,25 @@ public class BallMovement : MonoBehaviour
         
     {
         playerRb = GetComponent<Rigidbody2D>();
-        playerRb.transform.position = new Vector2(3.58f, 2.17f);
-    }
+        noHit = true;
+        
 
+    }
+    private void Update()
+    {
+        TrackPlayerScore();
+    }
     void Start()
     {
 
-        target = new Vector2(leftLimit, Random.Range(lowLimit, upLimit));
-        playerRb.AddForce((target - playerRb.transform.position).normalized * ballSpeed, ForceMode2D.Impulse);
+        RestartBall("start");
         EventBroker.PlayerPaddleHit += EventBroker_PlayerPaddleHit;
         EventBroker.AIPaddleHit += EventBroker_AIPaddleHit;
-        //Class References
         paddleMotion = FindObjectOfType<PaddleMotion>();
         paddleAI = FindObjectOfType<PaddleAI>();
-        
-
-      
-
     }
 
-    #region Event Methods
+
     private void EventBroker_AIPaddleHit()
     {
         aIPaddleHit = true;
@@ -65,51 +80,125 @@ public class BallMovement : MonoBehaviour
     {
     
         
-        Vector2 paddleLocation = paddleMotion.paddleCollider.transform.position;
-        Vector2 aIPaddleLocation = paddleAI.AICollider.transform.position;
+        paddleLocation = paddleMotion.paddleCollider.transform.position;
+        aIPaddleLocation = paddleAI.AICollider.transform.position;
         //Collisions with paddles.
         if (other.gameObject.CompareTag("Player"))
         {
             aIPaddleHit = false;
-            if (paddleLocation.y == playerRb.position.y)
-                playerRb.AddForce(new Vector2(rightLimit, playerRb.position.y).normalized * ballSpeed, ForceMode2D.Impulse);
-            else if (playerRb.position.y > paddleLocation.y)
-                playerRb.AddForce(new Vector2(rightLimit, upLimit).normalized * ballSpeed, ForceMode2D.Impulse);
-            else //if(playerRb.position.y < paddleLocation.y)
-                playerRb.AddForce(new Vector2(rightLimit, lowLimit).normalized * ballSpeed, ForceMode2D.Impulse);
+            DecidePaddleBounce(paddleLocation, rightLimit);
         }
         else if (other.gameObject.CompareTag("Player2"))
         {
             playerPaddleHit = false;
-            if (aIPaddleLocation.y == playerRb.position.y)
-                playerRb.AddForce(new Vector2(leftLimit, playerRb.position.y).normalized * ballSpeed, ForceMode2D.Impulse);
-            else if (playerRb.position.y > aIPaddleLocation.y)
-                playerRb.AddForce(new Vector2(leftLimit, upLimit).normalized * ballSpeed, ForceMode2D.Impulse);
-            else
-                playerRb.AddForce(new Vector2(leftLimit, lowLimit).normalized * ballSpeed, ForceMode2D.Impulse);
+            DecidePaddleBounce(aIPaddleLocation, leftLimit);
         }
 
         //collisions with screen bounds.
         else if (other.gameObject.CompareTag("Up limit"))
         {
-            if (playerPaddleHit == true)
-                playerRb.AddForce(new Vector2(rightLimit, lowLimit).normalized * ballSpeed, ForceMode2D.Impulse);
-            else
-                playerRb.AddForce(new Vector2(leftLimit, lowLimit).normalized * ballSpeed, ForceMode2D.Impulse);
+            DecideBoundBounce(lowLimit);
         }
         else
         {
-            if (playerPaddleHit == true)
-                playerRb.AddForce(new Vector2(rightLimit, upLimit).normalized * ballSpeed, ForceMode2D.Impulse);
-            else
-                playerRb.AddForce(new Vector2(leftLimit, upLimit).normalized * ballSpeed, ForceMode2D.Impulse);
+            DecideBoundBounce(upLimit);
         }
 
     }
-    #endregion
+    void DecidePaddleBounce(Vector2 paddleLocationVector, float horizontalLimit)
+    {
+        noHit = false;
+        if (paddleLocationVector.y == playerRb.position.y)
+            playerRb.AddForce(new Vector2(horizontalLimit, playerRb.position.y).normalized * ballSpeed, ForceMode2D.Impulse);
+        else if (playerRb.position.y > paddleLocationVector.y)
+            playerRb.AddForce(new Vector2(horizontalLimit, upLimit).normalized * ballSpeed, ForceMode2D.Impulse);
+        else
+            playerRb.AddForce(new Vector2(horizontalLimit, lowLimit).normalized * ballSpeed, ForceMode2D.Impulse);
+    }
+    void DecideBoundBounce(float verticalBound)
+    {
+        if (noHit == true)
+        {
+            if (playerRb.position.x <= 3.580f)
+            {
+                playerRb.AddForce(new Vector2(rightLimit, verticalBound).normalized * ballSpeed, ForceMode2D.Impulse);
+            }
+            else
+            {
+                playerRb.AddForce(new Vector2(leftLimit, verticalBound).normalized * ballSpeed, ForceMode2D.Impulse);
+            }
+        }
+        if (playerPaddleHit == true)
+            playerRb.AddForce(new Vector2(rightLimit, verticalBound).normalized * ballSpeed, ForceMode2D.Impulse);
+        else
+            playerRb.AddForce(new Vector2(leftLimit, verticalBound).normalized * ballSpeed, ForceMode2D.Impulse);
+
+    }
+
+    void RestartBall(string identifier)
+    {
+        playerRb.velocity = Vector2.zero;
+        playerRb.transform.position = new Vector2(3.58f, 2.17f);
+        if (identifier == "start")
+        {
+            target = new Vector2(Random.Range(rightLimit, leftLimit), Random.Range(lowLimit, upLimit));
+        }
+        else if(identifier == "player") { target = new Vector2(rightLimit, Random.Range(lowLimit, upLimit)); }
+        else { target = new Vector2(leftLimit, Random.Range(lowLimit, upLimit)); }
+            
+        playerRb.AddForce((target - playerRb.transform.position).normalized * ballSpeed, ForceMode2D.Impulse);
+    }
+    void TrackPlayerScore()
+    {
+        if ((playerScore < 3)& (aIScore < 3))
+        {
+
+            if (playerRb.position.x < rightLimit)
+            {
+                RestartBall("player");
+                playerScore++;
+                playerScoreText.text = playerScore.ToString();
+                
+            }
+            else if (playerRb.position.x > leftLimit)
+            {
+                RestartBall("ai");
+                aIScore++;
+                aIScoreText.text = aIScore.ToString();
+                
+            }
+
+
+        }
+        else
+        {
+            //Trigger gameOver
+            gameObject.SetActive(false);
+           DeclareWinner();
+            for (int i = 0; i < (uIPrefabs.Length-3);i++)
+            {
+                uIPrefabs[i].SetActive(true);
+            }
+            
+        }
+    }
+
+    void DeclareWinner()
+    {
+        uIPrefabs[3].SetActive(true);
+        if (aIScore > playerScore)
+        {
+            uIPrefabs[5].SetActive(true);
+        }
+        else
+        {
+            uIPrefabs[4].SetActive(true);
+        }
+    }
+
     private void FixedUpdate()
     {
-        if (playerPaddleHit == true)
+        if ((playerPaddleHit == true)|(noHit == true))
         {
             if(playerRb.position.x <= aiReactPoint)
             {
