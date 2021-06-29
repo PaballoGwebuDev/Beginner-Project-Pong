@@ -10,8 +10,8 @@ public class PaddleMotion : MonoBehaviour
 
     float playerSide = 12.82f; //placeholder for direction of the paddle for methods
     Transform paddleTransform;
-    //Encapsulating vertical game screen bounds
-    public float UpPaddleBounds
+
+    public float UpPaddleBounds //ENCAPSULATION
     {
         get
         {
@@ -48,7 +48,7 @@ public class PaddleMotion : MonoBehaviour
         verticalInput = Input.GetAxis("Vertical");
         MoveController(paddleTransform);
     }
-
+    //ABSTRACTION
     protected virtual void MoveController(Transform whichPaddle)
     {
         if (Input.GetKey(KeyCode.W))

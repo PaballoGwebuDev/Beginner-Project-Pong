@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PaddleAI : PaddleMotion
+public class PaddleAI : PaddleMotion //INHERITENCE
 {
 
     bool startMoving = false;
@@ -77,7 +77,7 @@ public class PaddleAI : PaddleMotion
 
     }
 
-    protected override void MoveController(Transform whichPaddle)
+    protected override void MoveController(Transform whichPaddle) //POLYMORPHISM
     {
         if (Input.GetKey(KeyCode.UpArrow))
         {
